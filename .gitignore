@@ -1,0 +1,310 @@
+# ----------------------------
+# Node.js
+# ----------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ----------------------------
+# Build outputs
+# ----------------------------
+dist/
+.build/
+out/
+build/
+.esbuild/
+*.tsbuildinfo
+!.gitkeep
+
+# ----------------------------
+# Vite / React
+# ----------------------------
+.vite/
+.vitepress/
+.cache/
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+.env
+
+# ----------------------------
+# Tailwind
+# ----------------------------
+.tailwindcache/
+*.tailwindcss
+
+# ----------------------------
+# Logs
+# ----------------------------
+*.log
+logs/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ----------------------------
+# TypeScript
+# ----------------------------
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+*.d.ts
+
+# ----------------------------
+# IDE / Editor
+# ----------------------------
+# VSCode
+.vscode/
+.history/
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.nfs*
+
+# ----------------------------
+# Tests / Coverage
+# ----------------------------
+coverage/
+*.lcov
+.nyc_output/
+jest/
+jest.config.js
+*.snap
+__tests__/
+__mocks__/
+
+# ----------------------------
+# Misc
+# ----------------------------
+*.bak
+*.tmp
+*.swp
+*.swo
+*.orig
+*.old
+*.rej
+*.sublime-*
+*.vscode-test/
+
+# ----------------------------
+# Docker
+# ----------------------------
+docker-compose.override.yml
+docker-compose.*.yml
+.docker/
+
+# ----------------------------
+# Environment files
+# ----------------------------
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# ----------------------------
+# NPM / Yarn / PNPM
+# ----------------------------
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# ----------------------------
+# OS files
+# ----------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+
+# ----------------------------
+# Images / Media
+# ----------------------------
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.webp
+
+# ----------------------------
+# Coverage
+# ----------------------------
+coverage/
+lcov-report/
+test-results/
+
+# ----------------------------
+# Misc binaries
+# ----------------------------
+*.exe
+*.dll
+*.so
+*.dylib
+*.deb
+*.rpm
+
+# ----------------------------
+# Editor backups
+# ----------------------------
+*~
+*.swp
+*.swo
+*.swn
+*.sublime-workspace
+*.sublime-project
+
+# ----------------------------
+# Node Environment
+# ----------------------------
+.env
+.env.*.local
+.npmrc
+.nvmrc
+
+# ----------------------------
+# VSCode
+# ----------------------------
+.vscode/
+.vscode-test/
+
+# ----------------------------
+# MacOS / Windows
+# ----------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ----------------------------
+# Yarn / PNPM
+# ----------------------------
+.pnp/
+.pnp.js
+.pnp.cjs
+
+# ----------------------------
+# Temporary / caches
+# ----------------------------
+.cache/
+tmp/
+temp/
+*.temp
+*.cache
+*.log
+
+# ----------------------------
+# Misc Dev Tools
+# ----------------------------
+.idea/
+*.sublime-*
+*.vscode-test/
+.history/
+*.orig
+*.rej
+*.swp
+*.swo
+
+# ----------------------------
+# Misc hidden
+# ----------------------------
+.*.swp
+.*.swo
+.*.swn
+.*.old
+.*.bak
+.*.tmp
+
+# ----------------------------
+# Node debug
+# ----------------------------
+.nodemon*
+pm2.pid
+pm2.log
+*.pid
+
+# ----------------------------
+# Docker / Container
+# ----------------------------
+docker-compose.override.yml
+.docker/
+.dockerignore
+
+# ----------------------------
+# Logs
+# ----------------------------
+*.log
+logs/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ----------------------------
+# Storybook
+# ----------------------------
+.storybook/
+out-storybook/
+
+# ----------------------------
+# Tests / Cypress
+# ----------------------------
+cypress/videos/
+cypress/screenshots/
+cypress/cache/
+
+# ----------------------------
+# VSCode specific
+# ----------------------------
+.vscode/
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# ----------------------------
+# Backup / temp
+# ----------------------------
+*.bak
+*.tmp
+*.swp
+*.swo
+*.old
+*.orig
+*.rej
+*.sublime-*
+
+# ----------------------------
+# End of .gitignore
+# ----------------------------
