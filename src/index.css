@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+.input {
+    @apply w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400;
+}
+
+.label {
+    @apply block text-sm font-medium mb-1 text-gray-700;
+}

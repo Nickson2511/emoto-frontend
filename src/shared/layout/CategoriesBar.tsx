@@ -93,7 +93,7 @@ const categories: Category[] = [
 
         ],
     },
-    // Add other categories similarly...
+
 ];
 
 const CategoriesBar = () => {

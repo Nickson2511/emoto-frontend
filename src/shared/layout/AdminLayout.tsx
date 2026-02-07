@@ -1,13 +1,34 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../hooks";
+import { logout } from "../../features/auth/authSlice";
+import api from "../../services/api";
+
 import { FiLogOut } from "react-icons/fi";
 
 import { useState } from "react";
 
 const AdminLayout = () => {
     const [openMenu, setOpenMenu] = useState<string | null>(null);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const toggleMenu = (menu: string) => {
         setOpenMenu(openMenu === menu ? null : menu);
+    };
+
+    const handleLogout = async () => {
+        try {
+            // Call backend logout API
+            await api.post("/auth/logout");
+
+            // Clear Redux state and localStorage
+            dispatch(logout());
+
+            // Redirect to login page
+            navigate("/admin/login");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
     };
 
     return (
@@ -110,11 +131,15 @@ const AdminLayout = () => {
                 </div>
 
                 {/* LOGOUT */}
-                {/* LOGOUT */}
-                <button className="mt-6 flex items-center gap-2 px-3 py-2 rounded bg-red-100 text-red-600 hover:bg-red-200">
+
+                <button
+                    onClick={handleLogout}
+                    className="mt-6 flex items-center gap-2 px-3 py-2 rounded bg-red-100 text-red-600 hover:bg-red-200"
+                >
                     <FiLogOut size={18} />
                     <span>Logout</span>
                 </button>
+
 
             </aside>
 
@@ -133,7 +158,7 @@ const AdminLayout = () => {
                 </div>
 
                 {/* PAGE CONTENT */}
-                <main className="p-6">
+                <main className="p-6 ">
                     <Outlet />
                 </main>
             </div>

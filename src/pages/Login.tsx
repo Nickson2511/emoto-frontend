@@ -32,6 +32,7 @@ const Login: React.FC = () => {
 
             // Save in Redux
             dispatch(setCredentials({ user, accessToken }));
+            localStorage.setItem("auth", JSON.stringify({ user, accessToken }));
 
             // Redirect based on role
             if (user.role === 'admin') navigate('/admin');
