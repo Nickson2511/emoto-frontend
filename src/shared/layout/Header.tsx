@@ -177,7 +177,7 @@ const Header: React.FC = () => {
                                         <DropdownItem
                                             label="Register"
                                             onClick={() => {
-                                                navigate('/register');
+                                                navigate('/login', { state: { mode: 'register' } });
                                                 setAccountOpen(false);
                                             }}
                                         />
