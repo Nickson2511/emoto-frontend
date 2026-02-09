@@ -9,6 +9,17 @@ import RequireAdmin from "../features/auth/RequireAdmin";
 import AdminDashboard from "../pages/AdminDashboard";
 import AdminCreateProductPage from "../pages/AdminCreateProductPage";
 import AdminCategoriesPage from "../pages/AdminCategoriesPage";
+import ProductsPage from "../pages/products/ProductsPage";
+import ProductDetailsPage from "../pages/products/ProductDetailsPage";
+import CartPage from "../pages/cart/CartPage";
+import CheckoutPage from "../pages/checkout/CheckoutPage";
+import RequireAuth from "../features/auth/RequireAuth";
+import AdminCustomersPage from "../pages/admin/AdminCustomersPage";
+import AdminUsersPage from "../pages/admin/AdminUsersPage";
+import AdminOrdersPage from "../pages/admin/AdminOrdersPage";
+import AdminReturnsPage from "../pages/admin/AdminReturnsPage";
+import AdminReportsPage from "../pages/admin/AdminReportsPage";
+import SettingsPage from "../pages/admin/AdminSettingsPage";
 
 const AppRouter = () => {
     return (
@@ -21,6 +32,20 @@ const AppRouter = () => {
                 <Route path="/" element={<UserLayout />}>
                     <Route index element={<Home />} />
                 </Route>
+                <Route path="/products" element={<ProductsPage />} />
+                <Route path="/shop" element={<ProductsPage />} />
+                <Route path="/products/:id" element={<ProductDetailsPage />} />
+                <Route path="/cart" element={<CartPage />} />
+
+                <Route
+                    path="/checkout"
+                    element={
+                        <RequireAuth>
+                            <CheckoutPage />
+                        </RequireAuth>
+                    }
+                />
+
 
                 {/* ADMIN SIDE */}
                 <Route
@@ -36,11 +61,30 @@ const AppRouter = () => {
 
                     {/* PRODUCTS */}
                     <Route path="products" element={<AdminCreateProductPage />} />
+
                     <Route path="categories" element={<AdminCategoriesPage />} />
+
+                    { /* USERS */}
+                    <Route path="customers" element={<AdminCustomersPage />} />
+                    <Route path="users" element={<AdminUsersPage />} />
+
+                    {/*Orders */}
+                    <Route path="orders" element={<AdminOrdersPage />} />
+
+                    { /* Returns */}
+                    <Route path="returns" element={<AdminReturnsPage />} />
+
+                    {/* Report */}
+
+                    <Route path="reports" element={<AdminReportsPage />} />
+
+                    { /* Settings */}
+                    <Route path="settings" element={<SettingsPage />} />
+
 
 
                     {/* (Optional later) */}
-                    {/* <Route path="categories" element={<AdminCategoriesPage />} /> */}
+
                     {/* <Route path="orders" element={<AdminOrdersPage />} /> */}
                 </Route>
             </Routes>

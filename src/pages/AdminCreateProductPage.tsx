@@ -28,19 +28,19 @@ const AdminCreateProductPage = () => {
         (state) => state.product
     );
 
-    const { user } = useAppSelector((state) => state.auth);
+    const { user, accessToken } = useAppSelector((state) => state.auth);
     useEffect(() => {
-        if (!user || user.role !== "admin") {
+        if (!user || !accessToken || user.role !== "admin") {
             setErrorMessage("Unauthorized access");
             window.location.href = "/";
         }
-    }, [user]);
+    }, [user, accessToken]);
 
     const [form, setForm] = useState<ProductForm>({});
     const [images, setImages] = useState<File[]>([]);
     const [preview, setPreview] = useState<string[]>([]);
     const [submitting, setSubmitting] = useState(false);
-    
+
 
     useEffect(() => {
         dispatch(getCategories());
@@ -65,7 +65,7 @@ const AdminCreateProductPage = () => {
     };
 
     const submit = async () => {
-        
+
         if (
             form.oldPrice &&
             form.price &&
@@ -259,18 +259,18 @@ const AdminCreateProductPage = () => {
                 <ProductsTable />
             </div>
             {successMessage && (
-    <SuccessModal
-        message={successMessage}
-        onClose={() => setSuccessMessage(null)}
-    />
-)}
+                <SuccessModal
+                    message={successMessage}
+                    onClose={() => setSuccessMessage(null)}
+                />
+            )}
 
-{errorMessage && (
-    <SuccessModal
-        message={errorMessage}
-        onClose={() => setErrorMessage(null)}
-    />
-)}
+            {errorMessage && (
+                <SuccessModal
+                    message={errorMessage}
+                    onClose={() => setErrorMessage(null)}
+                />
+            )}
 
         </div>
 

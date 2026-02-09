@@ -30,3 +30,14 @@ export interface Product {
     rating?: number;
     numReviews?: number;
 }
+
+export interface ProductSearchParams {
+    search?: string;
+    category?: string;
+    brand?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    sortBy?: "price_asc" | "price_desc" | "newest";
+}
+
+

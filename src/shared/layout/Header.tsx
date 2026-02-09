@@ -1,8 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../hooks';
 import type { RootState } from '../../app/store';
 import { logout } from '../../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
+import SearchResults from '../components/search/SearchResults';
+import SearchInput from '../components/search/SearchInput';
+import type { ProductSearchParams } from '../../features/product/types';
+
 import {
     Search,
     User,
@@ -12,13 +16,25 @@ import {
     LogOut
 } from 'lucide-react';
 
+
+
 const Header: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state: RootState) => state.auth.user);
+    const user = useAppSelector((state: RootState) => state.auth.user);
+    const cart = useAppSelector(state => state.cart.cart);
+    const totalItems = cart?.items.reduce((acc, item) => acc + item.quantity, 0) || 0;
 
     const [accountOpen, setAccountOpen] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
+
     const dropdownRef = useRef<HTMLDivElement | null>(null);
+    const searchRef = useRef<HTMLDivElement | null>(null);
+
+    const [searchParams, setSearchParams] = useState<ProductSearchParams>({
+        search: '',
+        sortBy: 'newest',
+    });
 
     const handleLogout = () => {
         dispatch(logout());
@@ -26,7 +42,7 @@ const Header: React.FC = () => {
         setAccountOpen(false);
     };
 
-    // Close dropdown when clicking outside
+    /* ================= CLOSE DROPDOWNS ================= */
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -35,10 +51,18 @@ const Header: React.FC = () => {
             ) {
                 setAccountOpen(false);
             }
+
+            if (
+                searchRef.current &&
+                !searchRef.current.contains(event.target as Node)
+            ) {
+                setSearchOpen(false);
+            }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     return (
@@ -54,18 +78,38 @@ const Header: React.FC = () => {
                 </div>
 
                 {/* SEARCH (DESKTOP) */}
-                <div className="flex-1 hidden md:flex items-center border border-accent rounded-lg overflow-hidden bg-gray-50">
+                <div
+                    ref={searchRef}
+                    className="relative flex-1 hidden md:flex items-center border border-accent rounded-lg bg-gray-50"
+                >
                     <div className="px-3 text-gray-400">
                         <Search size={18} />
                     </div>
-                    <input
-                        type="text"
-                        placeholder="Search products, brands and categories"
-                        className="flex-1 px-2 py-2 bg-transparent outline-none text-sm"
+
+                    <SearchInput
+                        value={searchParams.search}
+                        onSearch={(value) => {
+                            setSearchParams(prev => ({
+                                ...prev,
+                                search: value,
+                            }));
+                            setSearchOpen(!!value);
+                        }}
                     />
-                    <button className="bg-primary text-white px-5 py-2 text-sm hover:bg-primary/90">
-                        Search
-                    </button>
+
+
+                    {searchOpen && (
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-accent rounded-lg shadow-lg z-50">
+                            <SearchResults
+                                params={searchParams}
+                                onSelect={() => {
+                                    setSearchOpen(false);
+                                    setSearchParams({ search: '', sortBy: 'newest' });
+                                }}
+                            />
+
+                        </div>
+                    )}
                 </div>
 
                 {/* RIGHT ACTIONS */}
@@ -83,7 +127,6 @@ const Header: React.FC = () => {
                             </span>
                         </button>
 
-                        {/* DROPDOWN */}
                         {accountOpen && (
                             <div className="absolute right-0 mt-3 w-56 bg-white border border-accent rounded-lg shadow-lg overflow-hidden animate-fade-in">
 
@@ -147,28 +190,43 @@ const Header: React.FC = () => {
                     {/* CART */}
                     <button
                         onClick={() => navigate('/cart')}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100"
+                        className="relative flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100"
                     >
                         <ShoppingCart size={20} />
-                        <span className="hidden sm:block text-sm font-medium">
-                            Cart
-                        </span>
+                        <span className="hidden sm:block text-sm font-medium">Cart</span>
+
+                        {/* Badge showing number of items */}
+                        {totalItems > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                                {totalItems}
+                            </span>
+                        )}
                     </button>
                 </div>
             </div>
 
             {/* SEARCH (MOBILE) */}
-            <div className="md:hidden px-4 pb-3">
-                <div className="flex items-center border border-accent rounded-lg overflow-hidden bg-gray-50">
+            <div ref={searchRef} className="md:hidden px-4 pb-3 relative">
+                <div className="flex items-center border border-accent rounded-lg bg-gray-50">
                     <div className="px-3 text-gray-400">
                         <Search size={18} />
                     </div>
-                    <input
-                        type="text"
-                        placeholder="Search products..."
-                        className="flex-1 px-2 py-2 bg-transparent outline-none text-sm"
+                    <SearchInput
+                        onSearch={(value) => {
+                            setSearchParams(prev => ({
+                                ...prev,
+                                search: value,
+                            }));
+                            setSearchOpen(!!value);
+                        }}
                     />
                 </div>
+
+                {searchOpen && (
+                    <div className="absolute left-4 right-4 mt-2 bg-white border border-accent rounded-lg shadow-lg z-50">
+                        <SearchResults params={searchParams} />
+                    </div>
+                )}
             </div>
         </header>
     );
@@ -206,98 +264,15 @@ const DropdownItem = ({
 
 
 
-// import React from 'react';
-// import { useSelector, useDispatch } from 'react-redux';
-// import type { RootState } from '../../app/store';
-// import { logout } from '../../features/auth/authSlice';
-// import { useNavigate } from 'react-router-dom';
-// import { Search, User, ShoppingCart, Heart, Package } from 'lucide-react';
 
-// const Header: React.FC = () => {
-//     const dispatch = useDispatch();
-//     const navigate = useNavigate();
-//     const user = useSelector((state: RootState) => state.auth.user);
 
-//     const handleLogout = () => {
-//         dispatch(logout());
-//         navigate('/');
-//     };
 
-//     return (
-//         <header className="w-full border-b border-accent bg-white">
-//             <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-//                 <div className="text-2xl font-bold text-primary cursor-pointer" onClick={() => navigate('/')}>
-//                     eMotoParts
-//                 </div>
 
-//                 <div className="flex-1 mx-4 hidden sm:flex items-center border border-accent rounded overflow-hidden">
-//                     <div className="px-2 text-gray-400 flex items-center">
-//                         <Search size={18} />
-//                     </div>
-//                     <input
-//                         type="text"
-//                         placeholder="Search products, brands and categories"
-//                         className="flex-1 px-2 py-2 outline-none text-sm"
-//                     />
-//                     <button className="bg-primary text-white px-4">Search</button>
-//                 </div>
 
-//                 <div className="flex items-center gap-4">
-//                     <div className="relative group cursor-pointer">
-//                         <div className="flex items-center gap-1">
-//                             <User size={20} />
-//                             <span className="hidden md:block">{user ? user.name : 'Account'}</span>
-//                         </div>
 
-//                         {/* Dropdown */}
-//                         {user ? (
-//                             <div className="absolute hidden group-hover:block right-0 mt-2 w-48 bg-white border border-accent shadow-md">
-//                                 <div
-//                                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
-//                                     onClick={() => navigate('/')}
-//                                 >
-//                                     <User size={16} />
-//                                     <span>My Account</span>
-//                                 </div>
-//                                 <div
-//                                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
-//                                     onClick={() => navigate('/orders')}
-//                                 >
-//                                     <Package size={16} />
-//                                     <span>Orders</span>
-//                                 </div>
-//                                 <div className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => navigate('/wishlists')}>
-//                                     <Heart size={16} />
-//                                     <span>Wishlist</span>
-//                                 </div>
 
-//                                 <div
-//                                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
-//                                     onClick={handleLogout}
-//                                 >
-//                                     <span>Logout</span>
-//                                 </div>
-//                             </div>
-//                         ) : (
-//                             <div className="absolute hidden group-hover:block right-0 mt-2 w-36 bg-white border border-accent shadow-md">
-//                                 <div
-//                                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-//                                     onClick={() => navigate('/login')}
-//                                 >
-//                                     Login / Register
-//                                 </div>
-//                             </div>
-//                         )}
-//                     </div>
 
-//                     <div className="flex items-center gap-1 cursor-pointer" onClick={() => navigate('/cart')}>
-//                         <ShoppingCart size={20} />
-//                         <span className="hidden md:block">Cart</span>
-//                     </div>
-//                 </div>
-//             </div>
-//         </header>
-//     );
-// };
 
-// export default Header;
+
+
+

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const images = [
     "/banner/hero-bike.jpg",
@@ -16,6 +17,7 @@ const images = [
 const HeroBanner: React.FC = () => {
     // Track which image is currently shown
     const [currentIndex, setCurrentIndex] = useState(0);
+    const navigate = useNavigate();
 
     // Change image every 0 seconds
     useEffect(() => {
@@ -51,7 +53,11 @@ const HeroBanner: React.FC = () => {
                             Find engines, brakes, electrical parts and more at the best prices.
                         </p>
 
-                        <button className="mt-4 w-fit bg-orange-500 hover:bg-orange-600 transition text-white px-5 py-2 rounded-md text-sm sm:text-base">
+                        <button className="mt-4 w-fit bg-orange-500 hover:bg-orange-600 transition text-white px-5 py-2 rounded-md text-sm sm:text-base"
+
+                            onClick={() => navigate("/shop")}
+                        >
+
                             Shop Now
                         </button>
                     </div>
