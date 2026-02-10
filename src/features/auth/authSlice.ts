@@ -36,6 +36,7 @@ const authSlice = createSlice({
             state.user = null;
             state.accessToken = null;
             localStorage.removeItem("auth");
+            localStorage.removeItem("guestCartId");
         },
     },
 });
