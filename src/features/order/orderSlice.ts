@@ -31,6 +31,7 @@ export const updateOrderStatus = createAsyncThunk(
     }
 );
 
+
 // Cancel order (Admin)
 export const cancelOrder = createAsyncThunk(
     "orders/cancelOrder",
@@ -38,6 +39,15 @@ export const cancelOrder = createAsyncThunk(
         return await orderApi.cancelOrder(orderId);
     }
 );
+
+//user
+export const fetchMyOrders = createAsyncThunk(
+    "orders/fetchMyOrders",
+    async () => {
+        return await orderApi.fetchMyOrders();
+    }
+);
+
 
 const orderSlice = createSlice({
     name: "orders",
@@ -95,7 +105,24 @@ const orderSlice = createSlice({
             .addCase(cancelOrder.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || "Failed to cancel order";
-            });
+            })
+
+            // Fetch My Orders (User)
+            .addCase(fetchMyOrders.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchMyOrders.fulfilled, (state, action) => {
+                state.loading = false;
+                state.orders = action.payload;
+            })
+            .addCase(fetchMyOrders.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message || "Failed to fetch orders";
+            })
+
+
+
     },
 });
 

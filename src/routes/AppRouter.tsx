@@ -20,6 +20,8 @@ import AdminOrdersPage from "../pages/admin/AdminOrdersPage";
 import AdminReturnsPage from "../pages/admin/AdminReturnsPage";
 import AdminReportsPage from "../pages/admin/AdminReportsPage";
 import SettingsPage from "../pages/admin/AdminSettingsPage";
+import WishlistPage from "../pages/WishlistPage";
+import OrderPage from "../pages/order/OrderPage";
 
 const AppRouter = () => {
     return (
@@ -36,6 +38,9 @@ const AppRouter = () => {
                 <Route path="/shop" element={<ProductsPage />} />
                 <Route path="/products/:id" element={<ProductDetailsPage />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/wishlists" element={<WishlistPage />} />
+                <Route path="/orders" element={<OrderPage />} />
+
 
                 <Route
                     path="/checkout"

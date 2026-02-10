@@ -16,14 +16,20 @@ import {
     LogOut
 } from 'lucide-react';
 
-
-
 const Header: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
     const user = useAppSelector((state: RootState) => state.auth.user);
+
+    /* ================= CART ================= */
     const cart = useAppSelector(state => state.cart.cart);
-    const totalItems = cart?.items.reduce((acc, item) => acc + item.quantity, 0) || 0;
+    const totalItems =
+        cart?.items.reduce((acc, item) => acc + item.quantity, 0) || 0;
+
+    /* ================= WISHLIST ================= */
+    const wishlist = useAppSelector(state => state.wishlist);
+    const wishlistCount = wishlist.products.length;
 
     const [accountOpen, setAccountOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
@@ -97,17 +103,18 @@ const Header: React.FC = () => {
                         }}
                     />
 
-
                     {searchOpen && (
                         <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-accent rounded-lg shadow-lg z-50">
                             <SearchResults
                                 params={searchParams}
                                 onSelect={() => {
                                     setSearchOpen(false);
-                                    setSearchParams({ search: '', sortBy: 'newest' });
+                                    setSearchParams({
+                                        search: '',
+                                        sortBy: 'newest'
+                                    });
                                 }}
                             />
-
                         </div>
                     )}
                 </div>
@@ -115,11 +122,45 @@ const Header: React.FC = () => {
                 {/* RIGHT ACTIONS */}
                 <div className="flex items-center gap-3 sm:gap-5 ml-auto">
 
+                    {/* WISHLIST */}
+                    <button
+                        onClick={() => navigate('/wishlists')}
+                        className="relative flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100"
+                    >
+                        <Heart size={20} />
+                        <span className="hidden sm:block text-sm font-medium">
+                            Wishlist
+                        </span>
+
+                        {wishlistCount > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                                {wishlistCount}
+                            </span>
+                        )}
+                    </button>
+
+                    {/* CART */}
+                    <button
+                        onClick={() => navigate('/cart')}
+                        className="relative flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100"
+                    >
+                        <ShoppingCart size={20} />
+                        <span className="hidden sm:block text-sm font-medium">
+                            Cart
+                        </span>
+
+                        {totalItems > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                                {totalItems}
+                            </span>
+                        )}
+                    </button>
+
                     {/* ACCOUNT */}
                     <div className="relative" ref={dropdownRef}>
                         <button
                             onClick={() => setAccountOpen(prev => !prev)}
-                            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 focus:outline-none"
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100"
                         >
                             <User size={20} />
                             <span className="hidden sm:block text-sm font-medium">
@@ -128,8 +169,7 @@ const Header: React.FC = () => {
                         </button>
 
                         {accountOpen && (
-                            <div className="absolute right-0 mt-3 w-56 bg-white border border-accent rounded-lg shadow-lg overflow-hidden animate-fade-in">
-
+                            <div className="absolute right-0 mt-3 w-56 bg-white border border-accent rounded-lg shadow-lg overflow-hidden">
                                 {user ? (
                                     <>
                                         <DropdownItem
@@ -152,9 +192,13 @@ const Header: React.FC = () => {
                                             icon={<Heart size={16} />}
                                             label="Wishlist"
                                             onClick={() => {
-                                                navigate('/wishlists');
-                                                setAccountOpen(false);
+                                                if (!user) {
+                                                    navigate("/login");
+                                                } else {
+                                                    navigate("/wishlists");
+                                                }
                                             }}
+                                            
                                         />
                                         <div className="border-t">
                                             <DropdownItem
@@ -177,7 +221,9 @@ const Header: React.FC = () => {
                                         <DropdownItem
                                             label="Register"
                                             onClick={() => {
-                                                navigate('/login', { state: { mode: 'register' } });
+                                                navigate('/login', {
+                                                    state: { mode: 'register' }
+                                                });
                                                 setAccountOpen(false);
                                             }}
                                         />
@@ -186,47 +232,7 @@ const Header: React.FC = () => {
                             </div>
                         )}
                     </div>
-
-                    {/* CART */}
-                    <button
-                        onClick={() => navigate('/cart')}
-                        className="relative flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100"
-                    >
-                        <ShoppingCart size={20} />
-                        <span className="hidden sm:block text-sm font-medium">Cart</span>
-
-                        {/* Badge showing number of items */}
-                        {totalItems > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                                {totalItems}
-                            </span>
-                        )}
-                    </button>
                 </div>
-            </div>
-
-            {/* SEARCH (MOBILE) */}
-            <div ref={searchRef} className="md:hidden px-4 pb-3 relative">
-                <div className="flex items-center border border-accent rounded-lg bg-gray-50">
-                    <div className="px-3 text-gray-400">
-                        <Search size={18} />
-                    </div>
-                    <SearchInput
-                        onSearch={(value) => {
-                            setSearchParams(prev => ({
-                                ...prev,
-                                search: value,
-                            }));
-                            setSearchOpen(!!value);
-                        }}
-                    />
-                </div>
-
-                {searchOpen && (
-                    <div className="absolute left-4 right-4 mt-2 bg-white border border-accent rounded-lg shadow-lg z-50">
-                        <SearchResults params={searchParams} />
-                    </div>
-                )}
             </div>
         </header>
     );
@@ -258,14 +264,6 @@ const DropdownItem = ({
         <span>{label}</span>
     </button>
 );
-
-
-
-
-
-
-
-
 
 
 
