@@ -7,6 +7,7 @@ import Footer from "../../shared/layout/Footer";
 import { FiShoppingCart, FiHeart, FiChevronLeft } from "react-icons/fi";
 import { fetchProductById } from "../../services/productAPI";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import ReviewList from "../../shared/components/review/ReviewList";
 import {
     addToCart,
     fetchCart,
@@ -19,15 +20,20 @@ import {
     removeFromWishlist,
     fetchWishlist
 } from "../../features/wishlist/wishlistSlice";
+import { fetchProductReviews } from "../../features/review/reviewSlice";
 
 const ProductDetailsPage = () => {
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const containerRef = useRef<HTMLDivElement | null>(null);
     const dispatch = useAppDispatch();
+    const isAuth = useAppSelector(state => !!state.auth.user);
 
     const cart = useAppSelector(state => state.cart.cart);
     const wishlist = useAppSelector(state => state.wishlist.products);
+    const {  loading: reviewsLoading } = useAppSelector(
+        state => state.review
+    );
 
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
@@ -37,13 +43,21 @@ const ProductDetailsPage = () => {
     const [showCartSuccess, setShowCartSuccess] = useState(false);
     const [showWishlistSuccess, setShowWishlistSuccess] = useState(false);
 
-    /* ================= WISHLIST LOGIC ================= */
+    /* ================= WISHLIST ================= */
     const isWishlisted = wishlist.some(
         item => item._id === product?._id
     );
+    
+    useEffect(() => {
+        if (isAuth) dispatch(fetchWishlist());
+    }, [dispatch, isAuth]);
 
     const handleWishlistToggle = async () => {
         if (!product) return;
+        if (!isAuth) {
+            navigate("/login");
+            return;
+        }
 
         if (isWishlisted) {
             await dispatch(removeFromWishlist(product._id));
@@ -53,9 +67,12 @@ const ProductDetailsPage = () => {
         }
     };
 
+    /* ================= FETCH REVIEWS ================= */
     useEffect(() => {
-        dispatch(fetchWishlist());
-    }, [dispatch]);
+        if (id) {
+            dispatch(fetchProductReviews(id));
+        }
+    }, [id, dispatch]);
 
     /* ================= FETCH PRODUCT ================= */
     useEffect(() => {
@@ -159,53 +176,52 @@ const ProductDetailsPage = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             <Header />
-            <CategoriesBar/>
+            <CategoriesBar />
 
+            {/* ================= PRODUCT ================= */}
             <div
                 ref={containerRef}
-                className="max-w-6xl mx-auto px-4 py-12 flex flex-col md:flex-row items-center md:items-start gap-8"
+                className="max-w-6xl mx-auto px-4 py-12 flex flex-col md:flex-row gap-8"
             >
-                {/* ================= IMAGE ================= */}
+                {/* IMAGE */}
                 <div className="relative w-full md:w-1/2 bg-white rounded-xl shadow-lg overflow-hidden flex justify-center items-center">
                     <img
                         src={product.images?.[0]}
                         alt={product.name}
-                        className="w-full max-w-md h-auto md:h-[500px] object-cover rounded-xl"
+                        className="w-full max-w-md h-auto md:h-[500px] object-cover"
                     />
 
-                    {/* Floating Actions */}
-                    <div className="absolute top-4 right-4 flex flex-row md:flex-col gap-3">
-                        <div
+                    <div className="absolute top-4 right-4 flex gap-3">
+                        <button
                             onClick={handleWishlistToggle}
-                            className="bg-white p-2 rounded-full shadow hover:bg-orange-50 cursor-pointer transition"
+                            className="bg-white p-2 rounded-full shadow"
                         >
                             <FiHeart
-                                size={24}
+                                size={22}
                                 className={
                                     isWishlisted
                                         ? "text-red-600 fill-red-600"
                                         : "text-gray-400"
                                 }
                             />
-                        </div>
+                        </button>
 
-                        <div
+                        <button
                             onClick={handleAddToCart}
-                            className="bg-white p-2 rounded-full shadow hover:bg-orange-50 cursor-pointer transition"
+                            className="bg-white p-2 rounded-full shadow"
                         >
-                            <FiShoppingCart className="text-green-500" size={24} />
-                        </div>
+                            <FiShoppingCart size={22} className="text-green-500" />
+                        </button>
                     </div>
                 </div>
 
-                {/* ================= DETAILS ================= */}
-                <div className="w-full md:w-1/2 bg-white rounded-xl shadow-lg p-6 flex flex-col gap-5">
+                {/* DETAILS */}
+                <div className="w-full md:w-1/2 bg-white rounded-xl shadow-lg p-6 space-y-4">
                     <button
                         onClick={() => navigate("/products")}
-                        className="flex items-center gap-2 text-sm text-orange-600 hover:underline"
+                        className="flex items-center gap-2 text-sm text-orange-600"
                     >
-                        <FiChevronLeft />
-                        Back to Products
+                        <FiChevronLeft /> Back to Products
                     </button>
 
                     <h1 className="text-3xl font-bold">{product.name}</h1>
@@ -216,50 +232,57 @@ const ProductDetailsPage = () => {
                     </p>
 
                     <p
-                        className={`text-sm font-medium ${product.stock > 0 ? "text-green-600" : "text-red-500"
-                            }`}
+                        className={`text-sm font-medium ${
+                            product.stock > 0 ? "text-green-600" : "text-red-500"
+                        }`}
                     >
                         {product.stock > 0 ? "In Stock" : "Out of Stock"}
                     </p>
 
-                    {/* Quantity */}
+                    {/* QUANTITY */}
                     <div className="flex items-center gap-2">
-                        <button className="px-3 py-1 bg-gray-200 rounded" onClick={handleDecrease}>-</button>
+                        <button onClick={handleDecrease} className="px-3 py-1 bg-gray-200 rounded">-</button>
                         <span>{cartItem ? cartQty : qty}</span>
-                        <button className="px-3 py-1 bg-gray-200 rounded" onClick={handleIncrease}>+</button>
+                        <button onClick={handleIncrease} className="px-3 py-1 bg-gray-200 rounded">+</button>
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                    {/* ACTIONS */}
+                    <div className="flex gap-3 pt-4">
                         <button
                             onClick={handleAddToCart}
-                            className="flex items-center justify-center gap-2 bg-orange-500 text-white px-5 py-3 rounded-lg hover:bg-orange-600"
+                            className="flex-1 bg-orange-500 text-white py-3 rounded-lg flex items-center justify-center gap-2"
                         >
-                            <FiShoppingCart size={20} />
-                            Add to Cart
+                            <FiShoppingCart /> Add to Cart
                         </button>
 
                         <button
                             onClick={handleWishlistToggle}
-                            className="flex items-center justify-center gap-2 border px-5 py-3 rounded-lg hover:bg-gray-100"
+                            className="flex-1 border py-3 rounded-lg flex items-center justify-center gap-2"
                         >
                             <FiHeart
-                                size={20}
-                                className={
-                                    isWishlisted
-                                        ? "text-red-600 fill-red-600"
-                                        : ""
-                                }
+                                className={isWishlisted ? "text-red-600 fill-red-600" : ""}
                             />
-                            {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+                            Wishlist
                         </button>
                     </div>
                 </div>
             </div>
 
+            {/* ================= REVIEWS ================= */}
+            <div className="max-w-6xl mx-auto px-4 pb-16">
+                <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
+
+                {reviewsLoading ? (
+                    <p className="text-gray-500">Loading reviews...</p>
+                ) : (
+                    <ReviewList productId={product._id} />
+
+                )}
+            </div>
+
             <Footer />
 
-            {/* CART SUCCESS */}
+            {/* ================= MODALS ================= */}
             {showCartSuccess && (
                 <SuccessModal
                     message="Product added to cart successfully!"
@@ -267,7 +290,6 @@ const ProductDetailsPage = () => {
                 />
             )}
 
-            {/* WISHLIST SUCCESS */}
             {showWishlistSuccess && (
                 <SuccessModal
                     message="Product added to wishlist successfully!"
@@ -286,14 +308,23 @@ export default ProductDetailsPage;
 
 
 
+
+
+
+
+
+
+
 // import { useEffect, useRef, useState } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
 // import type { Product } from "../../features/product/types";
 // import Header from "../../shared/layout/Header";
+// import CategoriesBar from "../../shared/layout/CategoriesBar";
 // import Footer from "../../shared/layout/Footer";
 // import { FiShoppingCart, FiHeart, FiChevronLeft } from "react-icons/fi";
 // import { fetchProductById } from "../../services/productAPI";
 // import { useAppDispatch, useAppSelector } from "../../hooks";
+// import ReviewList from "../../shared/components/review/ReviewList";
 // import {
 //     addToCart,
 //     fetchCart,
@@ -306,6 +337,7 @@ export default ProductDetailsPage;
 //     removeFromWishlist,
 //     fetchWishlist
 // } from "../../features/wishlist/wishlistSlice";
+// import { fetchProductReviews } from "../../features/review/reviewSlice";
 
 // const ProductDetailsPage = () => {
 //     const { id } = useParams();
@@ -319,7 +351,10 @@ export default ProductDetailsPage;
 //     const [product, setProduct] = useState<Product | null>(null);
 //     const [loading, setLoading] = useState(true);
 //     const [qty, setQty] = useState(1);
-//     const [showSuccess, setShowSuccess] = useState(false);
+
+//     /* ================= MODALS ================= */
+//     const [showCartSuccess, setShowCartSuccess] = useState(false);
+//     const [showWishlistSuccess, setShowWishlistSuccess] = useState(false);
 
 //     /* ================= WISHLIST LOGIC ================= */
 //     const isWishlisted = wishlist.some(
@@ -333,12 +368,19 @@ export default ProductDetailsPage;
 //             await dispatch(removeFromWishlist(product._id));
 //         } else {
 //             await dispatch(addToWishlist(product._id));
+//             setShowWishlistSuccess(true);
 //         }
 //     };
 
 //     useEffect(() => {
 //         dispatch(fetchWishlist());
 //     }, [dispatch]);
+
+//     useEffect(() => {
+//         if (id) {
+//             dispatch(fetchProductReviews(id));
+//         }
+//     }, [id, dispatch]);
 
 //     /* ================= FETCH PRODUCT ================= */
 //     useEffect(() => {
@@ -394,7 +436,7 @@ export default ProductDetailsPage;
 //             );
 //         }
 
-//         setShowSuccess(true);
+//         setShowCartSuccess(true);
 //     };
 
 //     const handleIncrease = async () => {
@@ -442,6 +484,7 @@ export default ProductDetailsPage;
 //     return (
 //         <div className="min-h-screen bg-gray-50">
 //             <Header />
+//             <CategoriesBar />
 
 //             <div
 //                 ref={containerRef}
@@ -510,6 +553,8 @@ export default ProductDetailsPage;
 //                         <span>{cartItem ? cartQty : qty}</span>
 //                         <button className="px-3 py-1 bg-gray-200 rounded" onClick={handleIncrease}>+</button>
 //                     </div>
+                    
+
 
 //                     {/* Actions */}
 //                     <div className="flex flex-col sm:flex-row gap-3 mt-4">
@@ -541,10 +586,19 @@ export default ProductDetailsPage;
 
 //             <Footer />
 
-//             {showSuccess && (
+//             {/* CART SUCCESS */}
+//             {showCartSuccess && (
 //                 <SuccessModal
 //                     message="Product added to cart successfully!"
-//                     onClose={() => setShowSuccess(false)}
+//                     onClose={() => setShowCartSuccess(false)}
+//                 />
+//             )}
+
+//             {/* WISHLIST SUCCESS */}
+//             {showWishlistSuccess && (
+//                 <SuccessModal
+//                     message="Product added to wishlist successfully!"
+//                     onClose={() => setShowWishlistSuccess(false)}
 //                 />
 //             )}
 //         </div>
@@ -552,6 +606,8 @@ export default ProductDetailsPage;
 // };
 
 // export default ProductDetailsPage;
+
+
 
 
 
