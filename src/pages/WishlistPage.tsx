@@ -5,6 +5,7 @@ import { Heart, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "../shared/layout/Header";
 
+
 const WishlistPage = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -62,6 +63,7 @@ const WishlistPage = () => {
 
         <div className="max-w-6xl mx-auto p-6">
             <Header />
+
             <h1 className="text-2xl font-bold mb-6">
                 My Wishlist ({products.length})
             </h1>

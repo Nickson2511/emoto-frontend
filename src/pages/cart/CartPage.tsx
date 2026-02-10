@@ -68,6 +68,7 @@ const CartPage = () => {
         <div className="min-h-screen bg-gray-50">
             <Header />
 
+
             <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* CART ITEMS */}
                 <div className="lg:col-span-2 space-y-4">

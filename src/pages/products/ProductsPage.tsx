@@ -5,6 +5,7 @@ import { getProducts, getCategories } from "../../features/product/productSlice"
 import { selectFilteredProducts } from "../../utils/selectors";
 import type { ProductSearchParams,  Product } from "../../features/product/types";
 import Header from "../../shared/layout/Header";
+import CategoriesBar from "../../shared/layout/CategoriesBar";
 import { FiChevronRight,  FiMenu, FiX } from "react-icons/fi";
 import { Cpu, Zap, Sliders, Wrench, Hexagon, Truck, Droplet } from "lucide-react";
 import Footer from "../../shared/layout/Footer";
@@ -121,6 +122,7 @@ const ProductsPage = () => {
         <div className="min-h-screen bg-gray-50">
             {/* ================= HEADER ================= */}
             <Header />
+            <CategoriesBar />
 
             <div className="max-w-7xl mx-auto px-4 py-6">
                 {/* HAMBURGER FOR MOBILE */}

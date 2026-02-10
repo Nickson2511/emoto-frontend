@@ -3,6 +3,7 @@ import { useAppSelector, useAppDispatch } from '../../hooks';
 import type { RootState } from '../../app/store';
 import { logout } from '../../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
+
 import SearchResults from '../components/search/SearchResults';
 import SearchInput from '../components/search/SearchInput';
 import type { ProductSearchParams } from '../../features/product/types';
@@ -31,6 +32,7 @@ const Header: React.FC = () => {
     const wishlist = useAppSelector(state => state.wishlist);
     const wishlistCount = wishlist.products.length;
 
+    /* ================= STATE ================= */
     const [accountOpen, setAccountOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
 
@@ -73,6 +75,7 @@ const Header: React.FC = () => {
 
     return (
         <header className="w-full bg-white border-b border-accent sticky top-0 z-50">
+            {/* ================= TOP BAR ================= */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
 
                 {/* LOGO */}
@@ -83,7 +86,7 @@ const Header: React.FC = () => {
                     eMotoParts
                 </div>
 
-                {/* SEARCH (DESKTOP) */}
+                {/* ================= SEARCH (DESKTOP & TABLET) ================= */}
                 <div
                     ref={searchRef}
                     className="relative flex-1 hidden md:flex items-center border border-accent rounded-lg bg-gray-50"
@@ -111,7 +114,7 @@ const Header: React.FC = () => {
                                     setSearchOpen(false);
                                     setSearchParams({
                                         search: '',
-                                        sortBy: 'newest'
+                                        sortBy: 'newest',
                                     });
                                 }}
                             />
@@ -119,8 +122,16 @@ const Header: React.FC = () => {
                     )}
                 </div>
 
-                {/* RIGHT ACTIONS */}
+                {/* ================= RIGHT ACTIONS ================= */}
                 <div className="flex items-center gap-3 sm:gap-5 ml-auto">
+
+                    {/* MOBILE SEARCH ICON */}
+                    <button
+                        onClick={() => setSearchOpen(prev => !prev)}
+                        className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+                    >
+                        <Search size={20} />
+                    </button>
 
                     {/* WISHLIST */}
                     <button
@@ -191,14 +202,7 @@ const Header: React.FC = () => {
                                         <DropdownItem
                                             icon={<Heart size={16} />}
                                             label="Wishlist"
-                                            onClick={() => {
-                                                if (!user) {
-                                                    navigate("/login");
-                                                } else {
-                                                    navigate("/wishlists");
-                                                }
-                                            }}
-                                            
+                                            onClick={() => navigate('/wishlists')}
                                         />
                                         <div className="border-t">
                                             <DropdownItem
@@ -222,7 +226,7 @@ const Header: React.FC = () => {
                                             label="Register"
                                             onClick={() => {
                                                 navigate('/login', {
-                                                    state: { mode: 'register' }
+                                                    state: { mode: 'register' },
                                                 });
                                                 setAccountOpen(false);
                                             }}
@@ -234,6 +238,42 @@ const Header: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* ================= MOBILE SEARCH PANEL ================= */}
+            {searchOpen && (
+                <div className="md:hidden border-t border-accent bg-white px-4 py-3">
+                    <div className="relative flex items-center border border-accent rounded-lg bg-gray-50">
+                        <div className="px-3 text-gray-400">
+                            <Search size={18} />
+                        </div>
+
+                        <SearchInput
+                            value={searchParams.search}
+                            onSearch={(value) => {
+                                setSearchParams(prev => ({
+                                    ...prev,
+                                    search: value,
+                                }));
+                            }}
+                        />
+                    </div>
+
+                    {searchParams.search && (
+                        <div className="mt-2 bg-white border border-accent rounded-lg shadow-lg">
+                            <SearchResults
+                                params={searchParams}
+                                onSelect={() => {
+                                    setSearchOpen(false);
+                                    setSearchParams({
+                                        search: '',
+                                        sortBy: 'newest',
+                                    });
+                                }}
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
         </header>
     );
 };
@@ -264,6 +304,14 @@ const DropdownItem = ({
         <span>{label}</span>
     </button>
 );
+
+
+
+
+
+
+
+
 
 
 

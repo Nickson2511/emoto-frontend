@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 interface Props {
     params: ProductSearchParams;
-    onSelect?: () => void; // optional callback from parent
+    onSelect?: () => void;
 }
 
 const SearchResults = ({ params, onSelect }: Props) => {
@@ -16,9 +16,9 @@ const SearchResults = ({ params, onSelect }: Props) => {
         return <p className="p-4 text-sm text-gray-500">No results found</p>;
     }
 
-    const handleClick = () => {
-        navigate(`/products/`); // navigate
-        onSelect?.(); // close dropdown
+    const handleClick = (productId: string) => {
+        navigate(`/products/${productId}`);
+        onSelect?.();
     };
 
     return (
@@ -27,7 +27,7 @@ const SearchResults = ({ params, onSelect }: Props) => {
                 <li
                     key={p._id}
                     className="p-3 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleClick()}
+                    onClick={() => handleClick(p._id)}
                 >
                     <p className="font-medium">{p.name}</p>
                     <p className="text-sm text-gray-500">
@@ -40,3 +40,9 @@ const SearchResults = ({ params, onSelect }: Props) => {
 };
 
 export default SearchResults;
+
+
+
+
+
+

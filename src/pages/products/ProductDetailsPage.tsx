@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import type { Product } from "../../features/product/types";
 import Header from "../../shared/layout/Header";
+import CategoriesBar from "../../shared/layout/CategoriesBar";
 import Footer from "../../shared/layout/Footer";
 import { FiShoppingCart, FiHeart, FiChevronLeft } from "react-icons/fi";
 import { fetchProductById } from "../../services/productAPI";
@@ -158,6 +159,7 @@ const ProductDetailsPage = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             <Header />
+            <CategoriesBar/>
 
             <div
                 ref={containerRef}
