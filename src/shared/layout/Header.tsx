@@ -241,7 +241,7 @@ const Header: React.FC = () => {
 
             {/* ================= MOBILE SEARCH PANEL ================= */}
             {searchOpen && (
-                <div className="md:hidden border-t border-accent bg-white px-4 py-3">
+                <div ref={searchRef} className="md:hidden border-t border-accent bg-white px-4 py-3">
                     <div className="relative flex items-center border border-accent rounded-lg bg-gray-50">
                         <div className="px-3 text-gray-400">
                             <Search size={18} />
