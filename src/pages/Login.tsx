@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AxiosError } from 'axios';
@@ -6,27 +6,96 @@ import api from '../services/api';
 import { setCredentials } from '../features/auth/authSlice';
 import SuccessModal from '../shared/components/modals/SuccessModal';
 
+/* ================= GOOGLE TYPES ================= */
+
+interface GoogleCredentialResponse {
+    credential: string;
+    select_by?: string;
+}
+
+declare global {
+    interface Window {
+        google?: {
+            accounts: {
+                id: {
+                    initialize: (config: {
+                        client_id: string;
+                        callback: (response: GoogleCredentialResponse) => void;
+                    }) => void;
+                    renderButton: (
+                        parent: HTMLElement | null,
+                        options: Record<string, unknown>
+                    ) => void;
+                };
+            };
+        };
+    }
+}
+
 const Login: React.FC = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
 
-    // derive mode from router state
     const isRegister = location.state?.mode === 'register';
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
-
-    // success modal state
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+    /* ================= GOOGLE LOGIN ================= */
+
+    const handleGoogleLogin = useCallback(
+        async (response: GoogleCredentialResponse) => {
+            try {
+                const res = await api.post('/auth/google', {
+                    idToken: response.credential,
+                });
+
+                const { user, accessToken } = res.data.data;
+
+                dispatch(setCredentials({ user, accessToken }));
+                localStorage.setItem(
+                    'auth',
+                    JSON.stringify({ user, accessToken })
+                );
+
+                if (user.role === 'admin') navigate('/admin');
+                else navigate('/');
+            } catch {
+                alert('Google login failed');
+            }
+        },
+        [dispatch, navigate]
+    );
+
+    useEffect(() => {
+        if (!window.google) return;
+
+        window.google.accounts.id.initialize({
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
+            callback: handleGoogleLogin,
+        });
+
+        window.google.accounts.id.renderButton(
+            document.getElementById('googleSignInDiv'),
+            {
+                theme: 'outline',
+                size: 'large',
+                width: 250,
+                text: 'continue_with',
+            }
+        );
+    }, [handleGoogleLogin]);
+
+    /* ================= EMAIL LOGIN ================= */
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
             if (isRegister) {
-                // REGISTER
                 await api.post('/auth/register', {
                     name,
                     email,
@@ -37,7 +106,6 @@ const Login: React.FC = () => {
                 return;
             }
 
-            // LOGIN
             const res = await api.post('/auth/login', {
                 email,
                 password,
@@ -53,7 +121,7 @@ const Login: React.FC = () => {
 
             if (user.role === 'admin') navigate('/admin');
             else navigate('/');
-        } catch (err) {
+        } catch (err: unknown) {
             const error = err as AxiosError<{ message: string }>;
             alert(error.response?.data?.message || 'Login/Register failed');
         }
@@ -71,7 +139,7 @@ const Login: React.FC = () => {
                     onSubmit={handleSubmit}
                     className="bg-white p-6 rounded-lg shadow-md w-80"
                 >
-                    <h2 className="text-xl font-bold mb-4">
+                    <h2 className="text-xl font-bold mb-4 text-center">
                         {isRegister ? 'Create Account' : 'Login'}
                     </h2>
 
@@ -111,8 +179,20 @@ const Login: React.FC = () => {
                         {isRegister ? 'Register' : 'Login'}
                     </button>
 
+                    {/* Divider */}
+                    <div className="flex items-center my-4">
+                        <hr className="flex-grow border-gray-300" />
+                        <span className="mx-2 text-gray-400 text-sm">OR</span>
+                        <hr className="flex-grow border-gray-300" />
+                    </div>
+
+                    {/* GOOGLE BUTTON */}
+                    <div className="flex justify-center">
+                        <div id="googleSignInDiv"></div>
+                    </div>
+
                     {!isRegister ? (
-                        <p className="mt-2 text-sm text-gray-500 text-center">
+                        <p className="mt-4 text-sm text-gray-500 text-center">
                             Don&apos;t have an account?{' '}
                             <span
                                 onClick={() =>
@@ -126,7 +206,7 @@ const Login: React.FC = () => {
                             </span>
                         </p>
                     ) : (
-                        <p className="mt-2 text-sm text-gray-500 text-center">
+                        <p className="mt-4 text-sm text-gray-500 text-center">
                             Already have an account?{' '}
                             <span
                                 onClick={() =>
@@ -141,7 +221,6 @@ const Login: React.FC = () => {
                 </form>
             </div>
 
-            {/* SUCCESS MODAL */}
             {successMessage && (
                 <SuccessModal
                     message={successMessage}
@@ -153,3 +232,7 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+
+
+
+
