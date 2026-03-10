@@ -56,7 +56,7 @@ const TopDeals = () => {
         scrollRef.current?.scrollBy({ left: 300, behavior: "smooth" });
     };
 
-    // 🔥 ONLY Frame & Body, Wheels & Drivetrain, Consumables & Filtration
+    // ONLY Frame & Body, Wheels & Drivetrain, Consumables & Filtration
     const topDeals = products.filter((product) => {
         const categoryName = getCategoryName(product.category);
         return (

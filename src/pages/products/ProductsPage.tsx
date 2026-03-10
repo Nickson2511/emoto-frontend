@@ -208,8 +208,7 @@ const ProductsPage = () => {
             <Footer/>
             
             
-
-            
+    
         </div>
     );
 };
