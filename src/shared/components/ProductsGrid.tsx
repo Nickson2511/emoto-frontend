@@ -14,27 +14,38 @@ const ProductCard = ({
     onNavigate: (id: string) => void;
 }) => (
     <div className="bg-white border rounded-lg overflow-hidden hover:shadow-lg transition cursor-pointer">
+
+        {/* PRODUCT IMAGE */}
         <div onClick={() => onNavigate(product._id)}>
             <img
                 src={product.images?.[0]}
                 alt={product.name}
-                className="h-48 w-full object-cover"
+                className="h-60 sm:h-52 md:h-48 w-full object-cover"
             />
         </div>
 
-        <div className="p-3">
-            <p className="text-sm font-medium line-clamp-2">{product.name}</p>
+        {/* PRODUCT INFO */}
+        <div className="p-4">
 
-            <p className="text-orange-500 font-semibold mt-1">
+            {/* PRODUCT NAME */}
+            <p className="text-sm font-medium line-clamp-2">
+                {product.name}
+            </p>
+
+            {/* PRICE */}
+            <p className="text-orange-500 font-semibold mt-2 text-base">
                 KSh {product.price.toLocaleString()}
             </p>
 
+            {/* OLD PRICE */}
             {product.oldPrice && (
-                <p className="text-gray-400 text-xs line-through">
+                <p className="text-gray-400 text-sm line-through">
                     KSh {product.oldPrice.toLocaleString()}
                 </p>
             )}
+
         </div>
+
     </div>
 );
 
@@ -51,18 +62,24 @@ const ProductsGrid = () => {
     }, [dispatch]);
 
     return (
-        <div className="max-w-7xl mx-auto py-10">
+        <div className="max-w-7xl mx-auto py-10 px-4">
 
             {/* SECTION TITLE */}
             <h2 className="text-2xl font-semibold mb-6">
                 Find All Products
             </h2>
 
-            {/* BIG CARD CONTAINER (like Jumia) */}
+            {/* BIG CARD CONTAINER (Jumia style section) */}
             <div className="bg-white shadow-md rounded-xl p-6">
 
                 {/* PRODUCTS GRID */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <div className="grid 
+                    grid-cols-1
+                    sm:grid-cols-2
+                    md:grid-cols-3
+                    lg:grid-cols-4
+                    xl:grid-cols-5
+                    gap-6">
 
                     {products.map((product: Product) => (
                         <ProductCard
@@ -75,15 +92,9 @@ const ProductsGrid = () => {
                 </div>
 
             </div>
+
         </div>
     );
 };
 
 export default ProductsGrid;
-
-
-
-
-
-
-
