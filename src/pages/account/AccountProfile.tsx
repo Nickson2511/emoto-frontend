@@ -6,6 +6,8 @@ const AccountProfile = () => {
         (state) => state.auth.user
     );
 
+    console.log(user);
+
     return (
         <div>
 
@@ -18,6 +20,7 @@ const AccountProfile = () => {
                 <p className="text-sm sm:text-base">
                     <strong>Name:</strong> {user?.name}
                 </p>
+
 
                 <p className="text-sm sm:text-base">
                     <strong>Email:</strong> {user?.email}
