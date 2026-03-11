@@ -9,7 +9,6 @@ import {
     clearCart,
 } from "../../features/cart/cartSlice";
 import type { CartItem } from "../../features/cart/cartSlice";
-import Header from "../../shared/layout/Header";
 import Footer from "../../shared/layout/Footer";
 
 const CartPage = () => {
@@ -53,7 +52,6 @@ const CartPage = () => {
     if (!cart || cart.items.length === 0) {
         return (
             <>
-                <Header />
                 <div className="min-h-[60vh] flex items-center justify-center">
                     <p className="text-xl text-gray-500">
                         Your cart is empty. Start shopping 🛒
@@ -66,7 +64,7 @@ const CartPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Header />
+
 
 
             <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">

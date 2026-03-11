@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import orderApi from "../../services/orderAPI";
-import type { Order } from "../../services/orderAPI";
+import type { Order } from "../../types/order";
 
 interface OrderState {
     orders: Order[];

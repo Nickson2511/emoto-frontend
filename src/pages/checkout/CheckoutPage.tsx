@@ -2,24 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks";
 import { AxiosError } from "axios";
-import Header from "../../shared/layout/Header";
 import Footer from "../../shared/layout/Footer";
 import AddressSection from "../../shared/components/checkout/AddressSection";
 import { FiPhone, FiLoader } from "react-icons/fi";
 import { createOrder, initiateMpesaPayment } from "../../services/orderAPI";
+import type { Address } from "../../types/address";
 
 
-type Address = {
-    _id: string;
-    fullName: string;
-    phoneNumber: string;
-    county: string;
-    city: string;
-    area: string;
-    building?: string;
-    landmark?: string;
-    isDefault?: boolean;
-};
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
@@ -90,7 +79,7 @@ const CheckoutPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Header />
+
 
             <div className="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-2 gap-8">
 

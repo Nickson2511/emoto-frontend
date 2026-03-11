@@ -8,10 +8,12 @@ import addressReducer from '../features/address/addressSlice';
 import orderReducer from '../features/order/orderSlice';
 import wishlistReducer from '../features/wishlist/wishlistSlice';
 import reviewReducer from '../features/review/reviewSlice';
+import accountReducer from '../features/account/accountSlice';
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
+        account: accountReducer,
         users: useReducer,
         product: productReducer,
         category: categoryReducer,

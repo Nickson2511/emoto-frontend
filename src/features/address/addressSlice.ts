@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import addressAPI from "../../services/addressAPI";
-import type { Address } from "../../services/addressAPI";
+import type { Address } from "../../types/address";
 
 interface AddressState {
     addresses: Address[];
