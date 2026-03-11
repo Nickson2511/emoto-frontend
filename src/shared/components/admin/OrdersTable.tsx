@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { Order } from "../../../services/orderAPI";
+
+import type { Order } from "../../../types/order";
 import OrderDetailsModal from "../modals/OrderDetailsModal";
 
 interface OrdersTableProps {

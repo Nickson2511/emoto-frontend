@@ -5,7 +5,8 @@ import {
     createAddress,
     deleteAddress,
 } from "../../../features/address/addressSlice";
-import type { Address } from "../../../services/addressAPI";
+
+import type { Address } from "../../../types/address";
 
 type AddressSectionProps = {
     onSelect: (address: Address) => void;

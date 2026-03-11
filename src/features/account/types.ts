@@ -1,6 +1,6 @@
 import type { User } from "../users/types";
-import type { Address } from "../../services/addressAPI";
-import type { Order } from "../../services/orderAPI";
+import type { Address } from "../../types/address";
+import type { Order } from "../../types/order";
 
 export interface AccountStats {
     totalOrders: number;

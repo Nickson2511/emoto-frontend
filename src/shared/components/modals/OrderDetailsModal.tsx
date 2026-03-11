@@ -1,4 +1,4 @@
-import type { Order } from "../../../services/orderAPI";
+import type { Order } from "../../../types/order";
 
 interface OrderDetailsModalProps {
     order: Order;

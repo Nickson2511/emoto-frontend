@@ -1,5 +1,5 @@
 import api from "./api";
-import type { Address } from "./addressAPI";
+import type { Address } from "../types/address";
 
 
 
