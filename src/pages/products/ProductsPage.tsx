@@ -6,7 +6,6 @@ import { selectFilteredProducts } from "../../utils/selectors";
 import type { ProductSearchParams,  Product } from "../../features/product/types";
 import { FiChevronRight,  FiMenu, FiX } from "react-icons/fi";
 import { Cpu, Zap, Sliders, Wrench, Hexagon, Truck, Droplet } from "lucide-react";
-import Footer from "../../shared/layout/Footer";
 
 /* ================= SORT VALUES ================= */
 const SORT_VALUES = ["price_asc", "price_desc", "newest"] as const;
@@ -203,7 +202,7 @@ const ProductsPage = () => {
                 </div>
                 
             </div>
-            <Footer/>
+            
             
             
     

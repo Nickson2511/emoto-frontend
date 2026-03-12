@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import type { Product } from "../../features/product/types";
-
-import Footer from "../../shared/layout/Footer";
 import { FiShoppingCart, FiHeart, FiChevronLeft } from "react-icons/fi";
 import { fetchProductById } from "../../services/productAPI";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -30,7 +28,7 @@ const ProductDetailsPage = () => {
 
     const cart = useAppSelector(state => state.cart.cart);
     const wishlist = useAppSelector(state => state.wishlist.products);
-    const {  loading: reviewsLoading } = useAppSelector(
+    const { loading: reviewsLoading } = useAppSelector(
         state => state.review
     );
 
@@ -46,7 +44,7 @@ const ProductDetailsPage = () => {
     const isWishlisted = wishlist.some(
         item => item._id === product?._id
     );
-    
+
     useEffect(() => {
         if (isAuth) dispatch(fetchWishlist());
     }, [dispatch, isAuth]);
@@ -174,8 +172,8 @@ const ProductDetailsPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            
-            
+
+
 
             {/* ================= PRODUCT ================= */}
             <div
@@ -231,9 +229,8 @@ const ProductDetailsPage = () => {
                     </p>
 
                     <p
-                        className={`text-sm font-medium ${
-                            product.stock > 0 ? "text-green-600" : "text-red-500"
-                        }`}
+                        className={`text-sm font-medium ${product.stock > 0 ? "text-green-600" : "text-red-500"
+                            }`}
                     >
                         {product.stock > 0 ? "In Stock" : "Out of Stock"}
                     </p>
@@ -279,7 +276,7 @@ const ProductDetailsPage = () => {
                 )}
             </div>
 
-            <Footer />
+
 
             {/* ================= MODALS ================= */}
             {showCartSuccess && (

@@ -9,7 +9,7 @@ import {
     clearCart,
 } from "../../features/cart/cartSlice";
 import type { CartItem } from "../../features/cart/cartSlice";
-import Footer from "../../shared/layout/Footer";
+
 
 const CartPage = () => {
     const dispatch = useAppDispatch();
@@ -57,7 +57,7 @@ const CartPage = () => {
                         Your cart is empty. Start shopping 🛒
                     </p>
                 </div>
-                <Footer />
+
             </>
         );
     }
@@ -159,8 +159,6 @@ const CartPage = () => {
                     </button>
                 </div>
             </div>
-
-            <Footer />
         </div>
     );
 };

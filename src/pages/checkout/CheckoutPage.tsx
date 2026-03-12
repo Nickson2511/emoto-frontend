@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks";
 import { AxiosError } from "axios";
-import Footer from "../../shared/layout/Footer";
 import AddressSection from "../../shared/components/checkout/AddressSection";
 import { FiPhone, FiLoader } from "react-icons/fi";
 import { createOrder, initiateMpesaPayment } from "../../services/orderAPI";
@@ -201,7 +200,7 @@ const CheckoutPage = () => {
                 </div>
             </div>
 
-            <Footer />
+            
         </div>
     );
 };
